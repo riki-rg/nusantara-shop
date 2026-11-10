@@ -1,0 +1,36 @@
+services:
+  app:
+    build: .
+    container_name: nusantara-shop-app
+    restart: unless-stopped
+    networks: [webstack]
+    expose:
+      - "9000"
+    env_file: .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+    volumes:
+      - shop-data:/var/www/html/database          # SQLite persistent
+      - shop-storage:/var/www/html/storage/app/public  # foto produk persistent
+
+  nginx:
+    image: nginx:alpine
+    container_name: nusantara-shop-web
+    restart: unless-stopped
+    networks: [webstack]
+    expose:
+      - "80"
+    depends_on: [app]
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./public:/var/www/html/public:ro
+      - shop-storage:/var/www/html/storage/app/public:ro
+
+networks:
+  webstack:
+    external: true
+
+volumes:
+  shop-data:
+  shop-storage:
