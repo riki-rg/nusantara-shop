@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class AdminProductController extends Controller
 {
@@ -33,6 +34,7 @@ class AdminProductController extends Controller
 
         $validated = $this->validateProduct($request);
         $validated['slug'] = Str::slug($validated['name']) . '-' . Str::random(4);
+        $validated['image'] = $this->storeImage($request);
 
         Product::create($validated);
 
@@ -54,6 +56,13 @@ class AdminProductController extends Controller
         abort_unless(auth()->user()->is_admin, 403);
 
         $validated = $this->validateProduct($request);
+        if ($request->hasFile('image')) {
+            // hapus foto lama kalau ada
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
+            }
+            $validated['image'] = $this->storeImage($request);
+        }
         $product->update($validated);
 
         return redirect()->route('admin.products.index')->with('success', 'Produk diperbarui.');
@@ -77,7 +86,17 @@ class AdminProductController extends Controller
             'price_cents' => 'required|integer|min:0',
             'discount_percent' => 'required|integer|min:0|max:100',
             'stock' => 'required|integer|min:0',
+            'image' => 'nullable|image|mimes:png,jpg,jpeg,webp,gif|max:2048',
             'is_active' => 'boolean',
         ]) + ['is_active' => $request->boolean('is_active')];
+    }
+
+    private function storeImage(Request $request): ?string
+    {
+        if (! $request->hasFile('image')) {
+            return null;
+        }
+
+        return $request->file('image')->store('products', 'public');
     }
 }

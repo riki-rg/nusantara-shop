@@ -7,9 +7,16 @@
 
     <div class="mt-4 bg-white rounded-lg shadow-sm border p-8">
         <div class="flex items-start justify-between">
-            <div>
-                <h1 class="text-3xl font-bold">{{ $product->name }}</h1>
-                <p class="text-xs text-gray-400 mt-1">{{ $product->category?->name }}</p>
+            <div class="flex gap-6">
+                @if ($product->image)
+                    <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}" class="w-48 h-48 object-cover rounded-xl ring-1 ring-gray-200">
+                @else
+                    <div class="w-48 h-48 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-50 flex items-center justify-center text-6xl">📦</div>
+                @endif
+                <div>
+                    <h1 class="text-3xl font-bold">{{ $product->name }}</h1>
+                    <p class="text-xs text-gray-400 mt-1">{{ $product->category?->name }}</p>
+                </div>
             </div>
             @auth
                 <form method="POST" action="{{ route('wishlist.toggle', $product) }}">

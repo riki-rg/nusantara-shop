@@ -29,6 +29,13 @@
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         @forelse ($products as $product)
             <div class="bg-white rounded-lg shadow-sm border p-4 flex flex-col hover:shadow-md transition">
+                <a href="{{ route('products.show', $product) }}" class="block mb-3">
+                    @if ($product->image)
+                        <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}" class="w-full h-40 object-cover rounded-lg">
+                    @else
+                        <div class="w-full h-40 rounded-lg bg-gradient-to-br from-emerald-100 to-teal-50 flex items-center justify-center text-4xl">📦</div>
+                    @endif
+                </a>
                 <a href="{{ route('products.show', $product) }}" class="font-semibold hover:text-emerald-700 line-clamp-2">
                     {{ $product->name }}
                 </a>

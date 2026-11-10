@@ -10,6 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\PaymentController;
 
 // Admin gate: hanya user dengan is_admin
 Gate::define('admin', fn ($user) => $user->is_admin);
@@ -45,6 +46,10 @@ Route::middleware('auth')->group(function () {
 // Google OAuth
 Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
+
+// Midtrans payment
+Route::get('/pesanan/{order}/bayar', [PaymentController::class, 'pay'])->name('orders.pay');
+Route::post('/payment/midtrans/webhook', [PaymentController::class, 'webhook'])->name('payment.webhook');
 
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';

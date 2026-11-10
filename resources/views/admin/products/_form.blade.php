@@ -14,6 +14,16 @@
     </select>
 </div>
 <div>
+    <label class="block text-sm mb-1">Foto Produk</label>
+    @isset($product)
+        @if ($product->image)
+            <img src="{{ Storage::url($product->image) }}" alt="Foto produk" class="w-32 h-32 object-cover rounded-lg mb-2 ring-1 ring-gray-200">
+        @endif
+    @endisset
+    <input type="file" name="image" accept="image/png,image/jpeg,image/webp,image/gif" class="w-full px-3 py-2 border rounded-lg file:mr-3 file:px-3 file:py-1 file:rounded-md file:border-0 file:bg-emerald-50 file:text-emerald-700 file:text-sm">
+    @error('image')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
+</div>
+<div>
     <label class="block text-sm mb-1">Deskripsi</label>
     <textarea name="description" rows="4" class="w-full px-3 py-2 border rounded-lg">{{ old('description', $product->description ?? '') }}</textarea>
 </div>

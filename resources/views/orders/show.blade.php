@@ -39,6 +39,13 @@
             @endif
         </div>
 
+        @if ($order->status === 'pending')
+            <a href="{{ route('orders.pay', $order) }}"
+                class="mt-6 block w-full py-3 text-center bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-semibold shadow-lg shadow-emerald-200">
+                💳 Bayar Sekarang
+            </a>
+        @endif
+
         @if ($order->status === 'shipped')
             <form method="POST" action="{{ route('orders.confirm', $order) }}" class="mt-6">
                 @csrf

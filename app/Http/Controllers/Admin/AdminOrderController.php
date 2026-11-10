@@ -29,7 +29,10 @@ class AdminOrderController extends Controller
         abort_unless(auth()->user()->is_admin, 403);
 
         $validated = $request->validate(['status' => 'required|in:' . implode(',', Order::STATUSES)]);
+        $oldStatus = $order->status;
         $order->update($validated);
+
+        \App\Services\NotificationService::orderStatusChanged($order, $oldStatus);
 
         return back()->with('success', "Status {$order->code} → {$order->statusLabel()}.");
     }

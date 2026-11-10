@@ -68,6 +68,8 @@ class CheckoutController extends Controller
 
         session()->forget('cart');
 
+        \App\Services\NotificationService::orderCreated($order);
+
         return redirect()->route('orders.show', $order)
             ->with('success', "Pesanan {$order->code} berhasil dibuat!");
     }
